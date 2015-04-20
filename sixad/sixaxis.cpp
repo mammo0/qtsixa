@@ -493,6 +493,93 @@ int set_sixaxis_led(int csk, struct dev_led led, int rumble)
     } else
         led_n = 0;
 
+    if (led.enabled && led.anim)
+    {
+        /* Sixaxis LED animation - Way Cool!! */
+        if (rumble)
+        {
+            setleds_orig[3] = setleds_orig[5] = 0xfe;
+            setleds_gasia[3] = setleds_gasia[5] = 0xfe;
+        }
+        int i;
+        for (i=0; i<2; i++) {  // repeat it 2 times (used to be 4, but takes too long if hitting timeout)
+            if (rumble)
+            {
+                setleds_orig[4] = setleds_orig[6] = 0xff;
+                setleds_gasia[4] = setleds_gasia[6] = 0xff;
+            }
+            setleds_orig[11] = ledpattern[1];
+            setleds_gasia[11] = ledpattern[1];
+            send(csk, setleds_orig, sizeof(setleds_orig), 0);
+            send(csk, setleds_gasia, sizeof(setleds_gasia), 0);
+            usleep(10000);
+            setleds_orig[11] = ledpattern[2];
+            setleds_gasia[11] = ledpattern[2];
+            send(csk, setleds_orig, sizeof(setleds_orig), 0);
+            send(csk, setleds_gasia, sizeof(setleds_gasia), 0);
+            usleep(5000);
+            setleds_orig[11] = ledpattern[3];
+            setleds_gasia[11] = ledpattern[3];
+            send(csk, setleds_orig, sizeof(setleds_orig), 0);
+            send(csk, setleds_gasia, sizeof(setleds_gasia), 0);
+            usleep(5000);
+            setleds_orig[11] = ledpattern[4];
+            setleds_gasia[11] = ledpattern[4];
+            send(csk, setleds_orig, sizeof(setleds_orig), 0);
+            send(csk, setleds_gasia, sizeof(setleds_gasia), 0);
+            usleep(10000);
+            setleds_orig[11] = ledpattern[3];
+            setleds_gasia[11] = ledpattern[3];
+            send(csk, setleds_orig, sizeof(setleds_orig), 0);
+            send(csk, setleds_gasia, sizeof(setleds_gasia), 0);
+            usleep(5000);
+            setleds_orig[11] = ledpattern[2];
+            setleds_gasia[11] = ledpattern[2];
+            send(csk, setleds_orig, sizeof(setleds_orig), 0);
+            send(csk, setleds_gasia, sizeof(setleds_gasia), 0);
+            usleep(5000);
+        }
+        /* 2nd part of animation (animate until LED reaches selected number) */
+        if (led_n == 2 || led_n == 6 || led_n == 9)
+        {
+            setleds_orig[11] = ledpattern[1];
+            setleds_gasia[11] = ledpattern[1];
+            send(csk, setleds_orig, sizeof(setleds_orig), 0);
+            send(csk, setleds_gasia, sizeof(setleds_gasia), 0);
+        }
+        else if (led_n == 3 || led_n == 7)
+        {
+            setleds_orig[11] = ledpattern[1];
+            setleds_gasia[11] = ledpattern[1];
+            send(csk, setleds_orig, sizeof(setleds_orig), 0);
+            send(csk, setleds_gasia, sizeof(setleds_gasia), 0);
+            usleep(10000);
+            setleds_orig[11] = ledpattern[2];
+            setleds_gasia[11] = ledpattern[2];
+            send(csk, setleds_orig, sizeof(setleds_orig), 0);
+            send(csk, setleds_gasia, sizeof(setleds_gasia), 0);
+        }
+        else if (led_n == 4 || led_n == 8)
+        {
+            setleds_orig[11] = ledpattern[1];
+            setleds_gasia[11] = ledpattern[1];
+            send(csk, setleds_orig, sizeof(setleds_orig), 0);
+            send(csk, setleds_gasia, sizeof(setleds_gasia), 0);
+            usleep(100000);
+            setleds_orig[11] = ledpattern[2];
+            setleds_gasia[11] = ledpattern[2];
+            send(csk, setleds_orig, sizeof(setleds_orig), 0);
+            send(csk, setleds_gasia, sizeof(setleds_gasia), 0);
+            usleep(50000);
+            setleds_orig[11] = ledpattern[3];
+            setleds_gasia[11] = ledpattern[3];
+            send(csk, setleds_orig, sizeof(setleds_orig), 0);
+            send(csk, setleds_gasia, sizeof(setleds_gasia), 0);
+        }
+        usleep(100000);
+    }
+
+    /* set LEDs (final) */
     setleds_orig[11] = ledpattern[led_n];
     if (rumble) setleds_orig[3] = setleds_orig[4] = setleds_orig[5] = setleds_orig[6] = 0x00;
     send(csk, setleds_orig, sizeof(setleds_orig), 0);
