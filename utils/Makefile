@@ -4,7 +4,7 @@ CC ?= gcc
 CFLAGS ?= -O2 -Wall
 LDFLAGS += -Wl,-Bsymbolic-functions
 
-WANT_JACK = true
+WANT_JACK = false
 
 all: tools
 
@@ -35,3 +35,6 @@ uninstall:
 	rm -f $(DESTDIR)/usr/sbin/hidraw-dump
 	rm -f $(DESTDIR)/usr/sbin/sixpair
 	rm -f $(DESTDIR)/usr/sbin/sixpair-kbd
+ifeq ($(WANT_JACK),true)
+	rm -f $(DESTDIR)/usr/bin/sixad-jack
+endif
