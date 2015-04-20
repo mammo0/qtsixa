@@ -196,12 +196,13 @@ void l2cap_accept(int ctl, int csk, int isk, int debug, int legacy)
         return;
     }
 
-    if (bacmp(&addr_dst, &addr.l2_bdaddr)) {
+    // this doesn't work for Gasia Gamepads	
+    /*if (bacmp(&addr_dst, &addr.l2_bdaddr)) {
         syslog(LOG_ERR, "intr and ctrl streams from different hosts - rejecting both");
         close(ctrl_socket);
         close(intr_socket);
         return;
-    }
+    }*/
 
     req.vendor  = 0x054c;
     req.product = 0x0268;
@@ -331,6 +332,7 @@ void hid_server(int ctl, int csk, int isk, int debug, int legacy)
             if (debug) syslog(LOG_INFO, "One event received");
             l2cap_accept(ctl, csk, isk, debug, legacy);
             if (debug) syslog(LOG_INFO, "One event proccessed");
+            break;
         }
 
         if (events & (POLLERR | POLLHUP)) {

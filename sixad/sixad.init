@@ -16,7 +16,20 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 DAEMON=/usr/bin/sixad
 
 sixad_already_running_check () {
-ps -e | grep sixad-bin > /dev/null
+ps -e | grep sixad- > /dev/null
+}
+
+run_daemon () {
+while true; do
+  if ! (sixad_already_running_check "$1"); then
+    $DAEMON --start &>>/var/log/sixad
+  else
+    sleep 1
+  fi
+  if [ ! -f /var/run/sixad.pid ]; then
+    break
+  fi
+done
 }
 
 . /lib/lsb/init-functions
@@ -28,7 +41,8 @@ if (sixad_already_running_check "$1"); then
 else
 {
   log_daemon_msg "Starting sixad"
-  $DAEMON --start &>>/var/log/sixad &
+  run_daemon &
+  echo $! > /var/run/sixad.pid
   log_end_msg 0
 }
 fi
@@ -37,6 +51,8 @@ fi
     if (sixad_already_running_check "$1"); then
     {
       log_daemon_msg "Stopping sixad"
+      cat /var/run/sixad.pid | xargs kill
+      rm /var/run/sixad.pid
       $DAEMON --stop || true
       log_end_msg 0
     }
