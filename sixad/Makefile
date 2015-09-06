@@ -36,7 +36,7 @@ install:
 	install -m 755 bins/sixad-raw $(DESTDIR)/usr/sbin/
 
 	@chmod 777 -R $(DESTDIR)/var/lib/sixad/
-	@echo "Installation is Complete!"
+	update-rc.d sixad defaults
 
 uninstall:
 	rm -f $(DESTDIR)/etc/default/sixad
@@ -48,3 +48,5 @@ uninstall:
 	rm -f $(DESTDIR)/usr/sbin/sixad-remote
 	rm -f $(DESTDIR)/usr/sbin/sixad-raw
 	rm -rf $(DESTDIR)/var/lib/sixad/
+
+	update-rc.d -f sixad remove

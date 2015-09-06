@@ -26,6 +26,8 @@ endif
 	$(MAKE) install -C utils
 	$(MAKE) install -C sixad
 
+	@echo "Installation is Complete!"
+
 uninstall:
 ifeq ($(WANT_QTSIXA),true)
 	$(MAKE) uninstall -C qtsixa
@@ -33,3 +35,4 @@ endif
 	$(MAKE) uninstall -C sixad
 	$(MAKE) uninstall -C utils
 
+	@echo "Uninstallation is Complete!"
